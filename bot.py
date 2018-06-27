@@ -279,6 +279,7 @@ def huntt(m):
     x=users.find_one({'id':m.from_user.id})
     if x['huntingto']!=None:
         users.update_one({'id':x['id']}, {'$set':{'hunting':1}})
+        users.update_one({'id':x['id']}, {'$set':{'farming':1}})
         y=users.find_one({'id':x['huntingto']})
         chance=random.randint(1,100)
         sword=0
