@@ -31,8 +31,7 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 @bot.message_handler(commands=['update'])
 def upd(m):
         if m.from_user.id==441399484:
-            users.update_many({}, {'$set':{'huntedby':None}})
-            users.update_many({}, {'$set':{'nuntingon':None}})
+            users.update_many({}, {'$set':{'huntwin':0}})
             print('yes')
 
 def recipetoname(x):
@@ -275,6 +274,22 @@ def help(m):
                     '🔶 - легендарные.', parse_mode='markdown')
 
 
+@bot.message_handler(commands=['hunt'])
+def huntt(m):
+    x=users.find_one({'id':m.from_user.id})
+    if x['huntingto']!=None:
+        y=users.find_one({'id':x['huntingto']})
+        chance=random.randint(1,100)
+        sword=0
+        if x['craftable']['woodsword']>0:
+            sword-=8
+        if y['craftable']['woodsword']>0:
+            sword+=8
+        if chance+sword<=50:
+            users.update_one({'id':x['id']}, {'$set':{'huntwin':1}})
+
+
+
 @bot.message_handler(content_types=['text'])
 def text(m):
    if m.from_user.id==m.chat.id:
@@ -368,11 +383,11 @@ def text(m):
                if len(idss)>0:
                   user=random.choice(idss)
                   users.update_one({'id':m.from_user.id}, {'$set':{'huntedby':user['id']}})
-                  users.update_one({'id':user['id']}, {'$set':{'huntingto':m.from_user.id}})
-                  #try:
-                  bot.send_message(user['id'], 'Вы заметили '+m.from_user.first_name+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
-                  #except:
-                  print('oshibka')
+                  users.update_one({'id':user['id']}, {'$set':{'huntingon':m.from_user.id}})
+                  try:
+                        bot.send_message(user['id'], 'Вы заметили '+m.from_user.first_name+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
+                  except:
+                        print('oshibka')
             t=threading.Timer(300, hunt, args=[m.from_user.id])
             t.start()
           else:
@@ -674,6 +689,7 @@ def createuser(id, name):
           'name':name,
           'huntedby':None,
           'nuntingon':None,
+          'huntwin':0,
           'strenght':0,
           'coal':0,
           'iron':0,
