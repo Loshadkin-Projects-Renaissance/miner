@@ -287,6 +287,9 @@ def huntt(m):
             sword+=8
         if chance+sword<=50:
             users.update_one({'id':x['id']}, {'$set':{'huntwin':1}})
+        else:
+            pass
+        bot.send_message(m.chat.id, 'Вы решили напасть. Ожидайте результатов...')
 
 
 
@@ -511,10 +514,9 @@ def hunt(id):
       recources+='🔵Яйца: '+str(geggs)+'\n'
    if mushroom==1:
       recources+='🔶Грибы: '+str(gmushroom)+'\n'
-      
+   x=users.find_one({'id':id})   
    grecipe=random.randint(1,100)
    if grecipe<=15:
-      x=users.find_one({'id':id})
       recipe=random.choice(recipes)
       if len(x['recipes'])<len(recipes):
          while recipe in x['recipes']:
@@ -525,15 +527,42 @@ def hunt(id):
    text=random.choice(hunttexts)
    if meat==0 and fish==0 and eggs==0 and mushroom==0 and grecipe>15:
       text='В этот раз никого поймать не удалось - добыча была слишком быстрой.'
-      
-   users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
-   users.update_one({'id':id}, {'$inc':{'fish':gfish}})
-   users.update_one({'id':id}, {'$inc':{'egg':geggs}})
-   users.update_one({'id':id}, {'$inc':{'mushroom':gmushroom}})
-   users.update_one({'id':id}, {'$set':{'farming':0}})
-   try:
+   if x['huntedby']!=None:
+       y=users.find_one({'id':x['huntedby']})
+       if y['huntwin']==1:
+           bot.send_message(x['id'], 'Когда вы возвращались с охоты, на вас напал '+y['name']+'!\n.............\nОн оказался сильнее, и всю добычу пришлось отдать.')
+           bot.send_message(y['id'], 'Когда '+x['name']+' возвращался с охоты, вы напали на него из засады.\n.............\nВы победили, и забрали всю его добычу себе!')
+           users.update_one({'id':y['id']}, {'$inc':{'meat':gmeat}})
+           users.update_one({'id':y['id']}, {'$inc':{'fish':gfish}})
+           users.update_one({'id':y['id']}, {'$inc':{'egg':geggs}})
+           users.update_one({'id':y['id']}, {'$inc':{'mushroom':gmushroom}})
+           users.update_one({'id':id}, {'$set':{'huntedby':None}})
+           users.update_one({'id':y['id']}, {'$set':{'huntingon':None}})
+           bot.send_message(y['id'], 'Полученные ресурсы:\n'+recources)
+           bot.send_message(id, 'Ресурсы, которые у вас отняли:\n'+recources)
+       else:
+           bot.send_message(x['id'], 'Когда вы возвращались с охоты, на вас напал '+y['name']+'!\n.............\nВы одержали победу! Враг уходит ни с чем.')
+           bot.send_message(y['id'], 'Когда '+x['name']+' возвращался с охоты, вы напали на него из засады.\n.............\nВраг оказался слишком сильным, и вам пришлось отступить.')
+           users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
+           users.update_one({'id':id}, {'$inc':{'fish':gfish}})
+           users.update_one({'id':id}, {'$inc':{'egg':geggs}})
+           users.update_one({'id':id}, {'$inc':{'mushroom':gmushroom}})
+           users.update_one({'id':id}, {'$set':{'farming':0}})
+           bot.send_message(y['id'], 'Ваши добытые ресурсы:\n'+recources)
+           bot.send_message(y['id'], 'Ресурсы, которые нёс враг:\n'+recources)
+       users.update_one({'id':id}, {'$set':{'huntedby':None}})
+       users.update_one({'id':y['id']}, {'$set':{'huntingon':None}})
+       users.update_one({'id':id}, {'$set':{'farming':0}})
+           
+   else:
+    users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
+    users.update_one({'id':id}, {'$inc':{'fish':gfish}})
+    users.update_one({'id':id}, {'$inc':{'egg':geggs}})
+    users.update_one({'id':id}, {'$inc':{'mushroom':gmushroom}})
+    users.update_one({'id':id}, {'$set':{'farming':0}})
+    try:
       bot.send_message(id, text+recources)
-   except:
+    except:
       pass
    
    
