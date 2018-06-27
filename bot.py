@@ -62,6 +62,18 @@ db=client.farmer
 users=db.users
 
 
+@bot.message_handler(commands=['sendm'])
+def sendmes(message):
+    if message.from_user.id==441399484:
+        x=users.find({})
+        tex=message.text.split('/sendm')
+        for one in x:
+            try:
+              bot.send_message(one['id'], tex[1])
+            except:
+                pass
+
+
 @bot.message_handler(commands=['start'])
 def start(m):
    if users.find_one({'id':m.from_user.id})==None and m.chat.id==m.from_user.id:
