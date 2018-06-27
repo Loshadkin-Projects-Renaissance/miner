@@ -388,7 +388,7 @@ def text(m):
                if len(idss)>0:
                   user=random.choice(idss)
                   users.update_one({'id':m.from_user.id}, {'$set':{'huntedby':user['id']}})
-                  users.update_one({'id':user['id']}, {'$set':{'huntingon':m.from_user.id}})
+                  users.update_one({'id':user['id']}, {'$set':{'huntingto':m.from_user.id}})
                   try:
                         bot.send_message(user['id'], 'Вы заметили '+m.from_user.first_name+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
                   except:
