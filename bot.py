@@ -700,8 +700,8 @@ def cave(id):
                recources+='⚪️Чешуя: '+str(gleither)+'\n'
          text2='Вы оказались сильнее, и убили врага. Полученные ресурсы:\n'+recources
          users.update_one({'id':id}, {'$inc':{'squama':gleither}})
-         break=random.randint(1,100)
-         if break<=3 and x['craftable']['woodsword']>0:
+         breakk=random.randint(1,100)
+         if breakk<=3 and x['craftable']['woodsword']>0:
           users.update_one({'id':id}, {'$inc':{'craftable.woodsword':-1}})
           text2+='Ваш деревянный меч сломался!'
       else:
