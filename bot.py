@@ -72,8 +72,46 @@ def sendmes(message):
               bot.send_message(one['id'], tex[1])
             except:
                 pass
+               
+               
+@bot.message_handler(commands=['food'])
+def sendmes(message):
+      x=users.find_one({'id':m.from_user.id})
+      text=''
+      if x['meat']>0:
+         text+='Мясо (восполняет: 1🍗) (/eatmeat): '+str(x['meat'])+'\n'
+      if x['craftable']['cookedmeat']>0:
+         text+='Приготовленное мясо (восполняет: 5🍗) (/eatcookedmeat): '+str(x['craftable']['cookedmeat'])+'\n'
+      
 
-
+@bot.message_handler(commands=['eatmeat'])
+def eatm(m):
+   x=users.find_one({'id':m.from_user.id})
+   if x['meat']>0:
+      if x['hunger']<=x['maxhunger']-1:
+         users.update_one({'id':m.from_user.id}, {'$inc':{'meat':-1}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':1}})
+         bot.send_message(m.chat.id, 'Вы съели Мясо и восстановили 1🍗!')
+      else:
+         bot.send_message(m.chat.id, 'Вы не достаточно голодны!')
+   else:
+      bot.send_message(m.chat.id, 'У вас нет этого!')
+      
+@bot.message_handler(commands=['eatcookedmeat'])
+def eatcm(m):
+   x=users.find_one({'id':m.from_user.id})
+   if x['craftable']['cookedmeat']>0:
+      if x['hunger']<=x['maxhunger']-5:
+         users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.cookedmeat':-1}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':5}})
+         bot.send_message(m.chat.id, 'Вы съели Приготовленное мясо и восстановили 5🍗!')
+      else:
+         bot.send_message(m.chat.id, 'Вы не достаточно голодны!')
+   else:
+      bot.send_message(m.chat.id, 'У вас нет этого!')
+         
+      
+      
 @bot.message_handler(commands=['start'])
 def start(m):
    if users.find_one({'id':m.from_user.id})==None and m.chat.id==m.from_user.id:
@@ -267,7 +305,8 @@ def text(m):
                              'Голод: '+str(x['hunger'])+'/'+str(x['maxhunger'])+'🍗\n'+
                              'Уровень: '+str(x['level'])+'\n'+
                              'Опыт: '+str(x['exp'])+'\n'+
-                             'Инвентарь: /inventory')
+                             'Инвентарь: /inventory\n'+
+                             'Еда: /food')
             
          elif m.text=='Добыча':
             kb=types.ReplyKeyboardMarkup()
