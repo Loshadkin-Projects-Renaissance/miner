@@ -367,10 +367,11 @@ def text(m):
             if battle<=100:
                if len(idss)>0:
                   user=random.choice(idss)
-                  try:
-                     bot.send_message(user['id'], 'Вы заметили '+m.from_user.id+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
-                  except:
-                     print('oshibka')
+                  users.update_one({'id':m.from_user.id}, 
+                  #try:
+                  bot.send_message(user['id'], 'Вы заметили '+m.from_user.id+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
+                  #except:
+                  print('oshibka')
             t=threading.Timer(300, hunt, args=[m.from_user.id])
             t.start()
           else:
