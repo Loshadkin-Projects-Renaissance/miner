@@ -358,7 +358,7 @@ def text(m):
             users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
             bot.send_message(m.chat.id, 'Вы отправились на охоту. Вернётесь через 5 минут.')
             battle=random.randint(1,100)
-            ids=users.find({'id':{'$ne':m.from_user.id}}})
+            ids=users.find({'id':{'$ne':m.from_user.id}})
             idss=[]
             for i in ids:
                if i['farming']==0:
