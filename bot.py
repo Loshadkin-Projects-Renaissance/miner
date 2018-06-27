@@ -28,12 +28,12 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 #            print('yes')
 
 
-#@bot.message_handler(commands=['update'])
-#def upd(m):
-#        if m.from_user.id==441399484:
-#            users.update_many({}, {'$set':{'strenght':0}})
-#            users.update_many({}, {'$set':{'squama':0}})
-#            print('yes')
+@bot.message_handler(commands=['update'])
+def upd(m):
+        if m.from_user.id==441399484:
+            users.update_many({}, {'$set':{'huntedby':None}})
+            users.update_many({}, {'$set':{'nuntingon':None}})
+            print('yes')
 
 def recipetoname(x):
    text='У рецепта нет названия, сообщите об этом разработчику.'
@@ -357,6 +357,20 @@ def text(m):
           if x['farming']==0:
             users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
             bot.send_message(m.chat.id, 'Вы отправились на охоту. Вернётесь через 5 минут.')
+            battle=random.randint(1,100)
+            ids=users.find({'id':{'$ne':m.from_user.id}}})
+            idss=[]
+            for i in ids:
+               if i['farming']==0:
+                  idss.append(i)
+          
+            if battle<=100:
+               if len(idss)>0:
+                  user=random.choice(idss)
+                  try:
+                     bot.send_message(user['id'], 'Вы заметили '+m.from_user.id+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
+                  except:
+                     pass
             t=threading.Timer(300, hunt, args=[m.from_user.id])
             t.start()
           else:
@@ -656,6 +670,8 @@ def thouse(id):
 def createuser(id, name):
    return{'id':id,
           'name':name,
+          'huntedby':None,
+          'nuntingon':None,
           'strenght':0,
           'coal':0,
           'iron':0,
