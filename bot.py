@@ -75,7 +75,7 @@ def sendmes(message):
                
                
 @bot.message_handler(commands=['food'])
-def sendmes(message):
+def sendmes(m):
       x=users.find_one({'id':m.from_user.id})
       text=''
       if x['meat']>0:
