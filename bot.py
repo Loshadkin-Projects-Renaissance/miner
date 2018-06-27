@@ -195,7 +195,7 @@ def recipetocraft(x):
    if x=='woodsword':
       text='*Деревянный меч:* 40 (Дерево), 15 (Голод) (/woodsword).\n'
    if x=='farm':
-      text='*Ферма:* 600 (Дерево), 250 (Камень), 20 (Вода), 1 (Мотыга), 70 (Голод), 30 (Минут) (/farm).\n'
+      text='*Ферма:* 600 (Дерево), 250 (Камень), 20 (Вода), 1 (Мотыга), 70 (Голод) (/farm).\n'
    return text
    
 @bot.message_handler(commands=['furnance'])
@@ -700,6 +700,10 @@ def cave(id):
                recources+='⚪️Чешуя: '+str(gleither)+'\n'
          text2='Вы оказались сильнее, и убили врага. Полученные ресурсы:\n'+recources
          users.update_one({'id':id}, {'$inc':{'squama':gleither}})
+         break=random.randint(1,100)
+         if break<=3 and x['craftable']['woodsword']>0:
+          users.update_one({'id':id}, {'$inc':{'craftable.woodsword':-1}})
+          text2+='Ваш деревянный меч сломался!'
       else:
          text2='Враг был силён, и вам пришлось отступить.'
       bot.send_message(id, text+text2)
