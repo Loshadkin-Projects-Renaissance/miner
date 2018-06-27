@@ -794,6 +794,10 @@ if True:
          pass
    users.update_many({}, {'$set':{'farming':0}})
    users.update_many({}, {'$set':{'building':0}})
+   users.update_many({}, {'$set':{'hunting':0}}) 
+   users.update_many({}, {'$set':{'huntingto':None}})
+   users.update_many({}, {'$set':{'huntedby':None}})
+   users.update_many({}, {'$set':{'huntwin':0}})
    bot.polling(none_stop=True,timeout=600)
  except (requests.ReadTimeout):
         print('!!! READTIME OUT !!!')           
