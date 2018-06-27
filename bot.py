@@ -31,7 +31,7 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 @bot.message_handler(commands=['update'])
 def upd(m):
         if m.from_user.id==441399484:
-            users.update_many({}, {'$set':{'huntwin':0}})
+            users.update_many({}, {'$set':{'hunting':0}})
             print('yes')
 
 def recipetoname(x):
@@ -719,6 +719,7 @@ def createuser(id, name):
           'huntedby':None,
           'nuntingon':None,
           'huntwin':0,
+          'hunting':0,
           'strenght':0,
           'coal':0,
           'iron':0,
