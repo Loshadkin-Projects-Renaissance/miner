@@ -370,7 +370,7 @@ def text(m):
                   users.update_one({'id':m.from_user.id}, {'$set':{'huntedby':user['id']}})
                   users.update_one({'id':user['id']}, {'$set':{'huntingto':m.from_user.id}})
                   #try:
-                  bot.send_message(user['id'], 'Вы заметили '+m.from_user.id+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
+                  bot.send_message(user['id'], 'Вы заметили '+m.from_user.first_name+', добывающего ресурсы около вашего дома! Чтобы попробовать ограбить его, нажмите /hunt.')
                   #except:
                   print('oshibka')
             t=threading.Timer(300, hunt, args=[m.from_user.id])
