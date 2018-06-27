@@ -278,6 +278,7 @@ def help(m):
 def huntt(m):
     x=users.find_one({'id':m.from_user.id})
     if x['huntingto']!=None:
+        users.update_one({'id':x['id']}, {'$set':{'hunting':1}})
         y=users.find_one({'id':x['huntingto']})
         chance=random.randint(1,100)
         sword=0
@@ -527,8 +528,10 @@ def hunt(id):
    text=random.choice(hunttexts)
    if meat==0 and fish==0 and eggs==0 and mushroom==0 and grecipe>15:
       text='В этот раз никого поймать не удалось - добыча была слишком быстрой.'
+   
    if x['huntedby']!=None:
-       y=users.find_one({'id':x['huntedby']})
+    y=users.find_one({'id':x['huntedby']})
+    if y['hunting']==1:
        if y['huntwin']==1:
            bot.send_message(x['id'], 'Когда вы возвращались с охоты, на вас напал '+y['name']+'!\n.............\nОн оказался сильнее, и всю добычу пришлось отдать.')
            bot.send_message(y['id'], 'Когда '+x['name']+' возвращался с охоты, вы напали на него из засады.\n.............\nВы победили, и забрали всю его добычу себе!')
@@ -553,7 +556,23 @@ def hunt(id):
        users.update_one({'id':id}, {'$set':{'huntedby':None}})
        users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
        users.update_one({'id':id}, {'$set':{'farming':0}})
-           
+    else:
+        users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
+        users.update_one({'id':id}, {'$inc':{'fish':gfish}})
+        users.update_one({'id':id}, {'$inc':{'egg':geggs}})
+        users.update_one({'id':id}, {'$inc':{'mushroom':gmushroom}})
+        users.update_one({'id':id}, {'$set':{'farming':0}})
+        users.update_one({'id':id}, {'$set':{'huntedby':None}})
+        users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
+        users.update_one({'id':id}, {'$set':{'farming':0}})
+        try:
+                bot.send_message(id, text+recources)
+        except:
+                pass   
+        try:
+                bot.send_message(y['id'], 'Вы решили не атаковать, и цель ушла с ресурсами.')
+        except:
+                pass
    else:
     users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
     users.update_one({'id':id}, {'$inc':{'fish':gfish}})
