@@ -269,8 +269,8 @@ def text(m):
           x=users.find_one({'id':m.from_user.id})
           if x['farming']==0:
             users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
-            bot.send_message(m.chat.id, 'Вы отправились в лес. Вернётесь через 15 минут.')
-            t=threading.Timer(900, forest, args=[m.from_user.id])
+            bot.send_message(m.chat.id, 'Вы отправились в лес. Вернётесь через 5 минут.')
+            t=threading.Timer(300, forest, args=[m.from_user.id])
             t.start()
           else:
             bot.send_message(m.chat.id, 'Вы уже заняты добычей ресурсов, попробуйте позже.')
@@ -279,8 +279,8 @@ def text(m):
           x=users.find_one({'id':m.from_user.id})
           if x['farming']==0:
             users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
-            bot.send_message(m.chat.id, 'Вы отправились в пещеру. Вернётесь через 20 минут.')
-            t=threading.Timer(1200, cave, args=[m.from_user.id])
+            bot.send_message(m.chat.id, 'Вы отправились в пещеру. Вернётесь через 5 минут.')
+            t=threading.Timer(300, cave, args=[m.from_user.id])
             t.start()
           else:
             bot.send_message(m.chat.id, 'Вы уже заняты добычей ресурсов, попробуйте позже.')
@@ -289,8 +289,8 @@ def text(m):
           x=users.find_one({'id':m.from_user.id})
           if x['farming']==0:
             users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
-            bot.send_message(m.chat.id, 'Вы отправились на охоту. Вернётесь через 15 минут.')
-            t=threading.Timer(900, hunt, args=[m.from_user.id])
+            bot.send_message(m.chat.id, 'Вы отправились на охоту. Вернётесь через 5 минут.')
+            t=threading.Timer(300, hunt, args=[m.from_user.id])
             t.start()
           else:
             bot.send_message(m.chat.id, 'Вы уже заняты добычей ресурсов, попробуйте позже.')
