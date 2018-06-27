@@ -143,7 +143,7 @@ def recipetocraft(x):
    if x=='fishhamburger':
       text='*Бутерброд с рыбой:* 15 (Рыба), 10 (Хлеб) (/fishburger).\n'
    if x=='woodsword':
-      text='*Деревянный меч:* 40 (Дерево) (/woodsword).\n'
+      text='*Деревянный меч:* 40 (Дерево), 15 (Голод) (/woodsword).\n'
    if x=='farm':
       text='*Ферма:* 600 (Дерево), 250 (Камень), 20 (Вода), 1 (Мотыга), 70 (Голод), 30 (Минут) (/farm).\n'
    return text
@@ -194,6 +194,21 @@ def meat(m):
          users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.hoe':-1}})
          users.update_one({'id':m.from_user.id}, {'$push':{'buildings':'farm'}})
          bot.send_message(m.chat.id, 'Вы успешно построили Ферму!')
+      else:
+         bot.send_message(m.chat.id, 'Недостаточно ресурсов!')
+   else:
+      bot.send_message(m.chat.id, 'У вас нет этого рецепта!')   
+      
+      
+@bot.message_handler(commands=['woodsword'])
+def wsword(m):
+   x=users.find_one({'id':m.from_user.id})
+   if 'woodsword' in x['recipes']:
+      if x['wood']>=40 and x['hunger']>=15:
+         users.update_one({'id':m.from_user.id}, {'$inc':{'wood':-40}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':-15}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.woodsword':1}})
+         bot.send_message(m.chat.id, 'Вы успешно скрафтили Деревянный меч!')
       else:
          bot.send_message(m.chat.id, 'Недостаточно ресурсов!')
    else:
