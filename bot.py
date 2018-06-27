@@ -537,7 +537,7 @@ def hunt(id):
            users.update_one({'id':y['id']}, {'$inc':{'egg':geggs}})
            users.update_one({'id':y['id']}, {'$inc':{'mushroom':gmushroom}})
            users.update_one({'id':id}, {'$set':{'huntedby':None}})
-           users.update_one({'id':y['id']}, {'$set':{'huntingon':None}})
+           users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
            bot.send_message(y['id'], 'Полученные ресурсы:\n'+recources)
            bot.send_message(id, 'Ресурсы, которые у вас отняли:\n'+recources)
        else:
@@ -551,7 +551,7 @@ def hunt(id):
            bot.send_message(y['id'], 'Ваши добытые ресурсы:\n'+recources)
            bot.send_message(y['id'], 'Ресурсы, которые нёс враг:\n'+recources)
        users.update_one({'id':id}, {'$set':{'huntedby':None}})
-       users.update_one({'id':y['id']}, {'$set':{'huntingon':None}})
+       users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
        users.update_one({'id':id}, {'$set':{'farming':0}})
            
    else:
