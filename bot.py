@@ -82,6 +82,7 @@ def sendmes(m):
          text+='Мясо (восполняет: 1🍗) (/eatmeat): '+str(x['meat'])+'\n'
       if x['craftable']['cookedmeat']>0:
          text+='Приготовленное мясо (восполняет: 5🍗) (/eatcookedmeat): '+str(x['craftable']['cookedmeat'])+'\n'
+      bot.send_message(m.chat.id, text)
       
 
 @bot.message_handler(commands=['eatmeat'])
