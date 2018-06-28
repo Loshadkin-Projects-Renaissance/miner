@@ -52,6 +52,10 @@ def recipetoname(x):
       text='Деревянный меч'
    if x=='farm':
       text='Ферма'
+   if x=='bucket':
+      text='Ведро'
+   if x=='hoe':
+      text='Мотыга'
    return text
 
 
