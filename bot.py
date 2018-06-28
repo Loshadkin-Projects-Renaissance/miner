@@ -28,11 +28,11 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 #            print('yes')
 
 
-@bot.message_handler(commands=['update'])
-def upd(m):
-        if m.from_user.id==441399484:
-            users.update_many({}, {'$set':{'craftable.bucket':0}})
-            print('yes')
+#@bot.message_handler(commands=['update'])
+#def upd(m):
+#        if m.from_user.id==441399484:
+#            users.update_many({}, {'$set':{'craftable.bucket':0}})
+#            print('yes')
 
 def recipetoname(x):
    text='У рецепта нет названия, сообщите об этом разработчику.'
@@ -185,7 +185,7 @@ def recipetocraft(x):
    if x=='cookedmeat':
       text='*Приготовленное мясо:* 1 (Мясо), 1 (Уголь) (/meat).\n'
    if x=='fountain':
-      text='*Колодец:* 150 (Камень), 20 (Дерево), 1 (Ведро) (/fountain).\n'
+      text='*Колодец:* 150 (Камень), 40 (Дерево), 1 (Ведро), 50 (Голод) (/fountain).\n'
    if x=='bread':
       text='*Хлеб:* 10 (Пшено) (/bread).\n'
    if x=='fishingrod':
@@ -291,6 +291,27 @@ def meat(m):
         bot.send_message(m.chat.id, 'У вас уже есть это!')
    else:
       bot.send_message(m.chat.id, 'У вас нет этого рецепта!')   
+
+
+text='*Колодец:* 150 (Камень), 40 (Дерево), 1 (Ведро) (/fountain).\n'
+@bot.message_handler(commands=['fountain'])
+def meat(m):
+   x=users.find_one({'id':m.from_user.id})
+   if 'fountain' in x['recipes']:
+    if 'fountain' not in x['buildings']: 
+      if x['wood']>=40 and x['stone']>=150 and x['craftable']['bucket']>=1 and x['hunger']>=50:
+         users.update_one({'id':m.from_user.id}, {'$inc':{'stone':-150}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'wood':-40}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':-50}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.bucket':-1}})
+         users.update_one({'id':m.from_user.id}, {'$push':{'buildings':'fountain'}})
+         bot.send_message(m.chat.id, 'Вы успешно построили Колодец!')
+      else:
+         bot.send_message(m.chat.id, 'Недостаточно ресурсов!')
+    else:
+        bot.send_message(m.chat.id, 'У вас уже есть это!')
+   else:
+      bot.send_message(m.chat.id, 'У вас нет этого рецепта!')   
       
       
 @bot.message_handler(commands=['woodsword'])
@@ -377,6 +398,8 @@ def text(m):
             kb.add(types.KeyboardButton('🌲Лес'))
             kb.add(types.KeyboardButton('🕳Пещера'))
             kb.add(types.KeyboardButton('🐖Охота'))
+            if 'fountain' in x['buildings']:
+                kb.add('💧Колодец')
             kb.add(types.KeyboardButton('↩️Назад'))
             bot.send_message(m.chat.id, 'Куда хотите отправиться?', reply_markup=kb)
             
@@ -470,6 +493,17 @@ def text(m):
           else:
             bot.send_message(m.chat.id, 'Вы уже заняты добычей ресурсов, попробуйте позже.')
         
+         elif m.text=='💧Колодец':
+            x=users.find_one({'id':m.from_user.id})
+            if x['farming']==0:
+                users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
+                bot.send_message(m.chat.id, 'Вы отправились к колодцу. Вернётесь через 3 минуты.')
+                t=threading.Timer(180, water, args=[m.from_user.id])
+                t.start()
+            else:
+                bot.send_message(m.chat.id, 'Вы уже заняты добычей ресурсов, попробуйте позже.')
+         
+         
          elif m.text.lower()=='тест':
             if m.from_user.id==441399484:
                 bot.send_message(m.chat.id, 'Вы отправились в пещеру. Вернётесь через 3 секунды.')
@@ -486,7 +520,20 @@ def text(m):
             bot.send_message(m.chat.id, 'Добро пожаловать домой!', reply_markup=kb)
             
                
-            
+
+def water(id):
+    watertexts=['Вы набрали воду в колодце. Полученные ресурсы:\n']
+    water=random.randint(1,5)
+    recources=''
+    recources+='Вода: '+str(water)+'\n'
+    text=random.choice(watertexts)
+    users.update_one({'id':id}, {'$inc':{'water':water}})
+    users.update_one({'id':id}, {'$set':{'farming':0}})
+    try:
+      bot.send_message(id, text+recources)
+    except:
+      pass            
+                
 def forest(id):
    woodtexts=['Вы вернулись из леса. В этот раз удалось добыть:\n']
    wood=random.randint(1,100)
