@@ -265,9 +265,9 @@ def meat(m):
 def hoe(m):
    x=users.find_one({'id':m.from_user.id})
    if 'hoe' in x['recipes']:
-      if x['wood']>=50 and x['stone']>=25 and x['hunger']>=10:
+      if x['wood']>=50 and x['rock']>=25 and x['hunger']>=10:
          users.update_one({'id':m.from_user.id}, {'$inc':{'wood':-50}})
-         users.update_one({'id':m.from_user.id}, {'$inc':{'stone':-25}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'rock':-25}})
          users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':-10}})
          users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.hoe':1}})
          bot.send_message(m.chat.id, 'Вы успешно скрафтили Мотыгу!')
