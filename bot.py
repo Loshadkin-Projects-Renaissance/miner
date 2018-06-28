@@ -297,14 +297,13 @@ def meat(m):
       bot.send_message(m.chat.id, 'У вас нет этого рецепта!')   
 
 
-text='*Колодец:* 150 (Камень), 40 (Дерево), 1 (Ведро) (/fountain).\n'
 @bot.message_handler(commands=['fountain'])
 def meat(m):
    x=users.find_one({'id':m.from_user.id})
    if 'fountain' in x['recipes']:
     if 'fountain' not in x['buildings']: 
-      if x['wood']>=40 and x['stone']>=150 and x['craftable']['bucket']>=1 and x['hunger']>=50:
-         users.update_one({'id':m.from_user.id}, {'$inc':{'stone':-150}})
+      if x['wood']>=40 and x['rock']>=150 and x['craftable']['bucket']>=1 and x['hunger']>=50:
+         users.update_one({'id':m.from_user.id}, {'$inc':{'rock':-150}})
          users.update_one({'id':m.from_user.id}, {'$inc':{'wood':-40}})
          users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':-50}})
          users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.bucket':-1}})
