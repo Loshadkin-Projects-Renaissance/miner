@@ -19,7 +19,7 @@ bot = telebot.TeleBot(token)
 vip=[441399484, 55888804]
 
 craftable=['Бутерброд с рыбой','Приготовленное мясо','Печь','Колодец','Хлеб','Удочка','','','','','','','','','','','','']
-recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm', 'hoe']
+recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm', 'hoe', 'bucket']
 
 #@bot.message_handler(commands=['updatecraft'])
 #def upd(m):
@@ -31,7 +31,7 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 @bot.message_handler(commands=['update'])
 def upd(m):
         if m.from_user.id==441399484:
-            users.update_many({}, {'$set':{'nuntingto':None}})
+            users.update_many({}, {'$set':{'craftable.bucket':0}})
             print('yes')
 
 def recipetoname(x):
@@ -198,6 +198,8 @@ def recipetocraft(x):
       text='*Ферма:* 600 (Дерево), 250 (Камень), 20 (Вода), 1 (Мотыга), 70 (Голод) (/farm).\n'
    if x=='hoe':
       text='*Мотыга:* 50 (Дерево), 25 (Камень), 10 (Голод) (/hoe).\n'
+   if x=='bucket':
+      text='*Ведро:* 25 (Железо), 5 (Уголь), 5 (Голод) (/bucket).\n'
    return text
    
 @bot.message_handler(commands=['furnance'])
@@ -234,6 +236,26 @@ def meat(m):
       bot.send_message(m.chat.id, 'Для крафта вам нужно: Печь.')
    else:
       bot.send_message(m.chat.id, 'У вас нет этого рецепта!')  
+
+
+@bot.message_handler(commands=['bucket'])
+def meat(m):
+   x=users.find_one({'id':m.from_user.id})
+   if 'bucket' in x['recipes']:
+    if x['craftable']['furnance']>=1:
+      if x['iron']>=25 and x['coal']>=5 and x['hunger']>=5:
+         users.update_one({'id':m.from_user.id}, {'$inc':{'coal':-5}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'iron':-25}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':-5}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.bucket':1}})
+         bot.send_message(m.chat.id, 'Вы успешно скрафтили Ведро!')
+      else:
+         bot.send_message(m.chat.id, 'Недостаточно ресурсов!')
+    else:
+      bot.send_message(m.chat.id, 'Для крафта вам нужно: Печь.')
+   else:
+      bot.send_message(m.chat.id, 'У вас нет этого рецепта!')  
+
 
 @bot.message_handler(commands=['hoe'])
 def hoe(m):
@@ -924,7 +946,8 @@ def createuser(id, name):
                        'fishingrod':0,
                        'fishhamburger':0,
                        'woodsword':0,
-                       'hoe':0
+                       'hoe':0,
+                       'bucket':0
           },
           'squama':0
          }
