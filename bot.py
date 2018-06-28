@@ -545,7 +545,7 @@ def forest(id):
    gwood=0
    grock=0
    gmeat=0
-   if wood<=75:
+   if wood<=90:
       wood=1
       gwood=random.randint(4, 15)
    else:
