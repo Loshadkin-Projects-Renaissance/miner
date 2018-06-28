@@ -363,7 +363,7 @@ def text(m):
             for i in ids:
                   idss.append(i)
             
-            if battle<=20:
+            if battle<=100:
                if len(idss)>0:
                   user=random.choice(idss)
                   users.update_one({'id':m.from_user.id}, {'$set':{'huntedby':user['id']}})
@@ -388,7 +388,7 @@ def text(m):
             for i in ids:
                   idss.append(i)
             
-            if battle<=20:
+            if battle<=100:
                if len(idss)>0:
                   user=random.choice(idss)
                   users.update_one({'id':m.from_user.id}, {'$set':{'huntedby':user['id']}})
@@ -413,7 +413,7 @@ def text(m):
             for i in ids:
                   idss.append(i)
             
-            if battle<=20:
+            if battle<=100:
                if len(idss)>0:
                   user=random.choice(idss)
                   users.update_one({'id':m.from_user.id}, {'$set':{'huntedby':user['id']}})
