@@ -255,6 +255,7 @@ def hoe(m):
 def meat(m):
    x=users.find_one({'id':m.from_user.id})
    if 'farm' in x['recipes']:
+    if 'farm' not in x['buildings']: 
       if x['wood']>=600 and x['stone']>=250 and x['water']>=20 and x['craftable']['hoe']>=1 and x['hunger']>=70:
          users.update_one({'id':m.from_user.id}, {'$inc':{'stone':-250}})
          users.update_one({'id':m.from_user.id}, {'$inc':{'wood':-600}})
@@ -264,6 +265,8 @@ def meat(m):
          bot.send_message(m.chat.id, 'Вы успешно построили Ферму!')
       else:
          bot.send_message(m.chat.id, 'Недостаточно ресурсов!')
+    else:
+        bot.send_message(m.chat.id, 'У вас уже есть это!')
    else:
       bot.send_message(m.chat.id, 'У вас нет этого рецепта!')   
       
