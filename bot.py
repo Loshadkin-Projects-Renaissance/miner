@@ -511,12 +511,14 @@ def forest(id):
        users.update_one({'id':id}, {'$set':{'huntedby':None}})
        users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
        users.update_one({'id':id}, {'$set':{'farming':0}})
+       users.update_one({'id':y['id']}, {'$set':{'hunting':0}})
     else:
         users.update_one({'id':id}, {'$inc':{'wood':gwood}})
         users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
         users.update_one({'id':id}, {'$inc':{'rock':grock}})
         users.update_one({'id':id}, {'$set':{'huntedby':None}})
         users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
+        users.update_one({'id':y['id']}, {'$set':{'hunting':0}})
         users.update_one({'id':id}, {'$set':{'farming':0}})
         try:
                 bot.send_message(id, text+recources)
@@ -621,6 +623,7 @@ def hunt(id):
        users.update_one({'id':id}, {'$set':{'huntedby':None}})
        users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
        users.update_one({'id':id}, {'$set':{'farming':0}})
+       users.update_one({'id':y['id']}, {'$set':{'hunting':0}})
     else:
         users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
         users.update_one({'id':id}, {'$inc':{'fish':gfish}})
@@ -630,6 +633,7 @@ def hunt(id):
         users.update_one({'id':id}, {'$set':{'huntedby':None}})
         users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
         users.update_one({'id':id}, {'$set':{'farming':0}})
+        users.update_one({'id':y['id']}, {'$set':{'hunting':0}})
         try:
                 bot.send_message(id, text+recources)
         except:
@@ -763,6 +767,7 @@ def cave(id):
        users.update_one({'id':id}, {'$set':{'huntedby':None}})
        users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
        users.update_one({'id':id}, {'$set':{'farming':0}})
+       users.update_one({'id':y['id']}, {'$set':{'hunting':0}})
     else:
         users.update_one({'id':id}, {'$inc':{'rock':grock}})
         users.update_one({'id':id}, {'$inc':{'coal':gcoal}})
@@ -774,6 +779,7 @@ def cave(id):
         users.update_one({'id':id}, {'$set':{'huntedby':None}})
         users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
         users.update_one({'id':id}, {'$set':{'farming':0}})
+        users.update_one({'id':y['id']}, {'$set':{'hunting':0}})
         try:
                 bot.send_message(id, text+recources)
         except:
