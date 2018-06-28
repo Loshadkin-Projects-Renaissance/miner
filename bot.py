@@ -19,7 +19,7 @@ bot = telebot.TeleBot(token)
 vip=[441399484, 55888804]
 
 craftable=['Бутерброд с рыбой','Приготовленное мясо','Печь','Колодец','Хлеб','Удочка','','','','','','','','','','','','']
-recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm']
+recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm', 'hoe']
 
 #@bot.message_handler(commands=['updatecraft'])
 #def upd(m):
@@ -196,6 +196,8 @@ def recipetocraft(x):
       text='*Деревянный меч:* 40 (Дерево), 15 (Голод) (/woodsword).\n'
    if x=='farm':
       text='*Ферма:* 600 (Дерево), 250 (Камень), 20 (Вода), 1 (Мотыга), 70 (Голод) (/farm).\n'
+   if x=='hoe':
+      text='*Мотыга:* 50 (Дерево), 25 (Камень), 10 (Голод) (/hoe).\n'
    return text
    
 @bot.message_handler(commands=['furnance'])
@@ -231,7 +233,23 @@ def meat(m):
     else:
       bot.send_message(m.chat.id, 'Для крафта вам нужно: Печь.')
    else:
-      bot.send_message(m.chat.id, 'У вас нет этого рецепта!')   
+      bot.send_message(m.chat.id, 'У вас нет этого рецепта!')  
+
+@bot.message_handler(commands=['hoe'])
+def hoe(m):
+   x=users.find_one({'id':m.from_user.id})
+   if 'hoe' in x['recipes']:
+      if x['wood']>=50 and x['stone']>=25 and x['hunger']>=10:
+         users.update_one({'id':m.from_user.id}, {'$inc':{'wood':-50}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'stone':-25}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'hunger':-10}})
+         users.update_one({'id':m.from_user.id}, {'$inc':{'craftable.hoe':1}})
+         bot.send_message(m.chat.id, 'Вы успешно скрафтили Мотыгу!')
+      else:
+         bot.send_message(m.chat.id, 'Недостаточно ресурсов!')
+   else:
+      bot.send_message(m.chat.id, 'У вас нет этого рецепта!')  
+
       
 @bot.message_handler(commands=['farm'])
 def meat(m):
