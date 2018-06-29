@@ -19,7 +19,8 @@ bot = telebot.TeleBot(token)
 vip=[441399484, 55888804]
 
 craftable=['Бутерброд с рыбой','Приготовленное мясо','Печь','Колодец','Хлеб','Удочка','','','','','','','','','','','','']
-recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm', 'hoe', 'bucket', 'battery']
+recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm', 'hoe', 'bucket', 'battery',
+        'autobur']
 
 #@bot.message_handler(commands=['updatecraft'])
 #def upd(m):
@@ -58,6 +59,8 @@ def recipetoname(x):
       text='Мотыга' 
    if x=='battery':
       text='Батарейка'
+   if x=='autobur':
+      text='Автобур'
    return text
 
 
@@ -216,6 +219,8 @@ def recipetocraft(x):
       text='*Ведро:* 25 (Железо), 5 (Уголь), 5 (Голод) (/bucket).\n'
    if x=='battery':
       text='*Батарейка:* 70 (Железо), 20 (Медь), 500 (Электричество) (/battery).\n'
+   if x=='autobur':
+      text='*Автобур:* 5 (Иридий), 130 (Железо), 5 (Батарея), 6 (Алмазы) (/autobur).\n'
    return text
    
 @bot.message_handler(commands=['furnance'])
