@@ -31,8 +31,7 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 @bot.message_handler(commands=['update'])
 def upd(m):
         if m.from_user.id==441399484:
-            users.update_many({}, {'$set':{'seeding':0}})
-            users.update_many({}, {'$set':{'wheat':0}})
+            users.update_many({}, {'$set':{'cow':0}})
             print('yes')
 
 def recipetoname(x):
@@ -600,10 +599,12 @@ def forest(id):
    rock=random.randint(1,100)
    meat=random.randint(1,100)
    seeds=random.randint(1,100)
+   cow=random.randint(1,100)
    gwood=0
    grock=0
    gmeat=0
    gseeds=0
+   gcow=0
    if wood<=90:
       wood=1
       gwood=random.randint(4, 15)
@@ -614,11 +615,21 @@ def forest(id):
       grock=random.randint(1,8)
    else:
       rock=0
-   if meat<=15:
+   if meat<=20:
       meat=1
       gmeat=random.randint(1,3)
    else:
       meat=0
+   if seeds<=30:
+      seeds=1
+      gseeds=random.randint(3,8)
+   else:
+      seeds=0
+   if cow<=1:
+      cow=1
+      gcow=1
+   else:
+      cow=0
    recources=''  
    text=random.choice(woodtexts)
    if wood==1:
@@ -627,6 +638,10 @@ def forest(id):
       recources+='🔵Камень: '+str(grock)+'\n'
    if meat==1:
       recources+='🔵Мясо: '+str(gmeat)+'\n'
+   if seeds==1:
+      recources+='🔵Семена: '+str(gseeds)+'\n'
+   if cow==1:
+      recources+='🔶Телёнок: '+str(gcow)+'\n'
    x=users.find_one({'id':id})
    grecipe=random.randint(1,100)
    if grecipe<=15:
@@ -638,7 +653,7 @@ def forest(id):
          recources+='🔴Рецепт: '+recipetoname(recipe)
       
    text=random.choice(woodtexts)
-   if wood==0 and rock==0 and meat==0 and grecipe>15:
+   if wood==0 and rock==0 and meat==0 and grecipe>15 and seeds==0 and cow==0:
       text='В этот раз ничего добыть не удалось. Зато вы прогулялись по лесу и хорошо отдохнули!'
    
    if x['huntedby']!=None:
@@ -650,6 +665,8 @@ def forest(id):
            users.update_one({'id':y['id']}, {'$inc':{'wood':gwood}})
            users.update_one({'id':y['id']}, {'$inc':{'meat':gmeat}})
            users.update_one({'id':y['id']}, {'$inc':{'rock':grock}})
+           users.update_one({'id':y['id']}, {'$inc':{'seeds':gseeds}})
+           users.update_one({'id':y['id']}, {'$inc':{'cow':gcow}})
            bot.send_message(y['id'], 'Полученные ресурсы:\n'+recources)
            bot.send_message(id, 'Ресурсы, которые у вас отняли:\n'+recources)
        else:
@@ -658,6 +675,8 @@ def forest(id):
            users.update_one({'id':id}, {'$inc':{'wood':gwood}})
            users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
            users.update_one({'id':id}, {'$inc':{'rock':grock}})
+           users.update_one({'id':id}, {'$inc':{'seeds':gseeds}})
+           users.update_one({'id':id}, {'$inc':{'cow':gcow}})
            bot.send_message(x['id'], 'Ваши добытые ресурсы:\n'+recources)
            bot.send_message(y['id'], 'Ресурсы, которые нёс враг:\n'+recources)
        users.update_one({'id':id}, {'$set':{'huntedby':None}})
@@ -668,6 +687,8 @@ def forest(id):
         users.update_one({'id':id}, {'$inc':{'wood':gwood}})
         users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
         users.update_one({'id':id}, {'$inc':{'rock':grock}})
+        users.update_one({'id':id}, {'$inc':{'seeds':gseeds}})
+        users.update_one({'id':id}, {'$inc':{'cow':gcow}})
         users.update_one({'id':id}, {'$set':{'huntedby':None}})
         users.update_one({'id':y['id']}, {'$set':{'huntingto':None}})
         users.update_one({'id':y['id']}, {'$set':{'hunting':0}})
@@ -684,6 +705,8 @@ def forest(id):
     users.update_one({'id':id}, {'$inc':{'wood':gwood}})
     users.update_one({'id':id}, {'$inc':{'meat':gmeat}})
     users.update_one({'id':id}, {'$inc':{'rock':grock}})
+    users.update_one({'id':id}, {'$inc':{'seeds':gseeds}})
+    users.update_one({'id':id}, {'$inc':{'cow':gcow}})
     users.update_one({'id':id}, {'$set':{'farming':0}})
     try:
       bot.send_message(id, text+recources)
@@ -1035,6 +1058,7 @@ def createuser(id, name):
           'meat':0,
           'fish':0,
           'egg':0,
+          'cow':0,
           'seeds':0,
           'water':0,
           'iridium':0,
