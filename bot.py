@@ -883,7 +883,7 @@ def cave(id):
       
    if diamond<=2:
       diamond=1
-      gdiamond=random.randint(1,3)
+      gdiamond=random.randint(1,6)
    else:
       diamond=0
       
