@@ -31,7 +31,8 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 @bot.message_handler(commands=['update'])
 def upd(m):
         if m.from_user.id==441399484:
-            users.update_many({}, {'$set':{'seeds':0}})
+            users.update_many({}, {'$set':{'seeding':0}})
+            users.update_many({}, {'$set':{'wheat':0}})
             print('yes')
 
 def recipetoname(x):
@@ -392,7 +393,7 @@ def text(m):
             t=threading.Timer(120, thouse, args=[m.from_user.id])
             t.start()
       else:
-         if m.text=='Обо мне':
+         if m.text=='❓Обо мне':
             bot.send_message(m.chat.id, 'Привет, '+x['name']+'!\n'+
                              'Голод: '+str(x['hunger'])+'/'+str(x['maxhunger'])+'🍗\n'+
                              'Уровень: '+str(x['level'])+'\n'+
@@ -400,7 +401,7 @@ def text(m):
                              'Инвентарь: /inventory\n'+
                              'Еда: /food')
             
-         elif m.text=='Добыча':
+         elif m.text=='👷Добыча':
             kb=types.ReplyKeyboardMarkup()
             kb.add(types.KeyboardButton('🌲Лес'))
             kb.add(types.KeyboardButton('🕳Пещера'))
@@ -410,7 +411,7 @@ def text(m):
             kb.add(types.KeyboardButton('↩️Назад'))
             bot.send_message(m.chat.id, 'Куда хотите отправиться?', reply_markup=kb)
             
-         elif m.text=='Дом':
+         elif m.text=='⛺️Дом':
             kb=types.ReplyKeyboardMarkup()
             kb.add(types.KeyboardButton('⚒Крафт'))
             kb.add(types.KeyboardButton('↩️Назад'))
@@ -520,16 +521,63 @@ def text(m):
                 users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
                 t=threading.Timer(3, cave, args=[m.from_user.id])
                 t.start()
-                        
+                
+         elif m.text=='🐔Ферма' and m.from_user.id==m.chat.id:
+            if 'farm' in x['buildings']:
+                kb=types.ReplyKeyboardMarkup()
+                kb.add('Посадить семена')
+                kb.add('Животные')
+                kb.add('↩️Назад')
+                bot.send_message(m.chat.id, 'Вы на своей ферме! Выберите действие.', reply_markup=kb)
+            else:
+                bot.send_message(m.chat.id, 'У вас нет фермы!')
+                
+         
+         elif m.text=='Посадить семена' and m.from_user.id==m.chat.id:
+            if 'farm' in x['buildings']:
+                kb=types.ReplyKeyboardMarkup()
+                bot.send_message(m.chat.id, 'Отправьте количество семян, которое хотите посадить', reply_markup=kb)   
+                users.update_one({'id':x['id']}, {'$set':{'seeding':1}})
+                t=threading.Timer(30, seed0, args=[m.from_user.id])
+                t.start()
          
          elif m.text=='↩️Назад':
             kb=types.ReplyKeyboardMarkup()
-            kb.add('Добыча')
-            kb.add('Дом')
-            kb.add('Обо мне')
+            kb.add('👷Добыча')
+            kb.add('⛺️Дом')
+            if 'farm' in x['buildings']:
+                kb.add('🐔Ферма')
+            kb.add('❓Обо мне')
             bot.send_message(m.chat.id, 'Добро пожаловать домой!', reply_markup=kb)
             
-               
+         else:
+            if x['seeding']==1:
+            try:
+                z=int(m.text)
+                if x['seeds']>=z and z>0:
+                  if x['water']>0:
+                    users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
+                    bot.send_message(m.chat.id, 'Вы отправились сажать семяна. Вернётесь через 3 минуты.')
+                    t=threading.Timer(180, seeding, args=[m.from_user.id, z])
+                    t.start()
+                  else:
+                    bot.send_message(m.chat.id, 'Для этого вам не хватает 1 (Вода)! (требуется: 1)')
+                else:
+                    bot.send_message(m.chat.id, 'У вас недостаточно семян, или вы указали отрицательное число.')
+                
+                                    
+def seed0(id):
+    users.update_one({'id':id}, {'$set':{'seeding':0}})
+            
+def seeding(id, x):
+    users.update_one({'id':id}, {'$inc':{'seeds':-x}})
+    users.update_one({'id':id}, {'$inc':{'wheat':x}})
+    users.update_one({'id':id}, {'$inc':{'water':-1}})
+    bot.send_message(id, 'Вы вырастили и собрали '+str(x)+' пшена! Потрачено: 1 (Вода).')
+    users.update_one({'id':id}, {'$set':{'farming':0}})
+    
+
+
 
 def water(id):
     watertexts=['Вы набрали воду в колодце. Полученные ресурсы:\n']
@@ -963,6 +1011,7 @@ def thouse(id):
 def createuser(id, name):
    return{'id':id,
           'name':name,
+          'seeding':0,
           'huntedby':None,
           'nuntingto':None,
           'huntwin':0,
@@ -977,6 +1026,7 @@ def createuser(id, name):
           'money':0,
           'sand':0,
           'salt':0,
+          'wheat':0,
           'ruby':0,
           'shugar':0,
           'mushroom':0,
