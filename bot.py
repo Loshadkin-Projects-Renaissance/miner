@@ -28,11 +28,11 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 #            print('yes')
 
 
-#@bot.message_handler(commands=['update'])
-#def upd(m):
-#        if m.from_user.id==441399484:
-#            users.update_many({}, {'$set':{'craftable.bucket':0}})
-#            print('yes')
+@bot.message_handler(commands=['update'])
+def upd(m):
+        if m.from_user.id==441399484:
+            users.update_many({}, {'$set':{'seeds':0}})
+            print('yes')
 
 def recipetoname(x):
    text='У рецепта нет названия, сообщите об этом разработчику.'
@@ -177,6 +177,10 @@ def inventory(m):
          text+='Приготовленное мясо: '+str(x['craftable']['cookedmeat'])+'\n'
       if x['craftable']['woodsword']>0:
          text+='Деревянный меч: '+str(x['craftable']['woodsword'])+'\n'
+      if x['craftable']['hoe']>0:
+         text+='Мотыга: '+str(x['craftable']['hoe'])+'\n'
+      if x['craftable']['bucket']>0:
+         text+='Ведро: '+str(x['craftable']['bucket'])+'\n'
       if text=='':
          text='Инвентарь пуст!'
       bot.send_message(m.chat.id, text)
@@ -545,9 +549,11 @@ def forest(id):
    wood=random.randint(1,100)
    rock=random.randint(1,100)
    meat=random.randint(1,100)
+   seeds=random.randint(1,100)
    gwood=0
    grock=0
    gmeat=0
+   gseeds=0
    if wood<=90:
       wood=1
       gwood=random.randint(4, 15)
@@ -977,6 +983,7 @@ def createuser(id, name):
           'meat':0,
           'fish':0,
           'egg':0,
+          'seeds':0,
           'water':0,
           'iridium':0,
           'hunger':100,
