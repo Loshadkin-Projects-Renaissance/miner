@@ -559,6 +559,7 @@ def text(m):
             
          else:
             if x['seeding']==1:
+             if x['farming']!=1:
               try:
                 z=int(m.text)
                 if x['seeds']>=z and z>0:
@@ -573,6 +574,9 @@ def text(m):
                     bot.send_message(m.chat.id, 'У вас недостаточно семян, или вы указали отрицательное число.')
               except:
                 pass
+             else:
+                bot.send_message(m.chat.id, 'Вы уже заняты добычей ресурсов.')
+
                 
                                     
 def seed0(id):
