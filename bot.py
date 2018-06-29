@@ -19,7 +19,7 @@ bot = telebot.TeleBot(token)
 vip=[441399484, 55888804]
 
 craftable=['Бутерброд с рыбой','Приготовленное мясо','Печь','Колодец','Хлеб','Удочка','','','','','','','','','','','','']
-recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm', 'hoe', 'bucket']
+recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhamburger', 'woodsword', 'farm', 'hoe', 'bucket', 'battery']
 
 #@bot.message_handler(commands=['updatecraft'])
 #def upd(m):
@@ -31,7 +31,7 @@ recipes=['furnance', 'cookedmeat', 'fountain', 'bread', 'fishingrod', 'fishhambu
 @bot.message_handler(commands=['update'])
 def upd(m):
         if m.from_user.id==441399484:
-            users.update_many({}, {'$set':{'cow':0}})
+            users.update_many({}, {'$set':{'craftable.battery':0}})
             print('yes')
 
 def recipetoname(x):
@@ -55,7 +55,9 @@ def recipetoname(x):
    if x=='bucket':
       text='Ведро'
    if x=='hoe':
-      text='Мотыга'
+      text='Мотыга' 
+   if x=='battery':
+      text='Батарейка'
    return text
 
 
@@ -173,6 +175,10 @@ def inventory(m):
          text+='Вода: '+str(x['water'])+'\n'
       if x['squama']>0:
          text+='Чешуя: '+str(x['squama'])+'\n'
+      if x['seeds']>0:
+         text+='Семена: '+str(x['squama'])+'\n'
+      if x['cow']>0:
+         text+='Телёнок: '+str(x['cow'])+'\n'
       if x['craftable']['cookedmeat']>0:
          text+='Приготовленное мясо: '+str(x['craftable']['cookedmeat'])+'\n'
       if x['craftable']['woodsword']>0:
@@ -208,6 +214,8 @@ def recipetocraft(x):
       text='*Мотыга:* 50 (Дерево), 25 (Камень), 10 (Голод) (/hoe).\n'
    if x=='bucket':
       text='*Ведро:* 25 (Железо), 5 (Уголь), 5 (Голод) (/bucket).\n'
+   if x=='battery':
+      text='*Батарейка:* 70 (Железо), 20 (Медь), 500 (Электричество) (/battery).\n'
    return text
    
 @bot.message_handler(commands=['furnance'])
