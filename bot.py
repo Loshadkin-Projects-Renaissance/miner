@@ -499,10 +499,13 @@ def text(m):
          elif m.text=='💧Колодец':
             x=users.find_one({'id':m.from_user.id})
             if x['farming']==0:
+             if 'fountain' in x['buildings']:
                 users.update_one({'id':m.from_user.id}, {'$set':{'farming':1}})
                 bot.send_message(m.chat.id, 'Вы отправились к колодцу. Вернётесь через 3 минуты.')
                 t=threading.Timer(180, water, args=[m.from_user.id])
                 t.start()
+             else:
+               bot.send_message(m.chat.id, 'У вас нет колодца!')
             else:
                 bot.send_message(m.chat.id, 'Вы уже заняты добычей ресурсов, попробуйте позже.')
          
