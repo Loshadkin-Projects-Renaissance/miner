@@ -68,6 +68,10 @@ client1=os.environ['database']
 client=MongoClient(client1)
 db=client.everlastingsummer
 users=db.users
+x=0
+for ids in users:
+        x+=1
+print(str(x))
 
 
 @bot.message_handler(commands=['sendm'])
