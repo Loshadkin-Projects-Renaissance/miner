@@ -69,7 +69,8 @@ client=MongoClient(client1)
 db=client.everlastingsummer
 users=db.users
 x=0
-for ids in users:
+ss=users.find({})
+for ids in ss:
         x+=1
 print(str(x))
 
