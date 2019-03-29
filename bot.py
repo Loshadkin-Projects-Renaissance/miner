@@ -66,13 +66,9 @@ def recipetoname(x):
 
 client1=os.environ['database']
 client=MongoClient(client1)
-db=client.everlastingsummer
+db=client.farmer
 users=db.users
 x=0
-ss=users.find({})
-for ids in ss:
-        x+=1
-print(str(x))
 
 
 @bot.message_handler(commands=['sendm'])
